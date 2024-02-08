@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,25 +15,34 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name="module")
+@Table(name="modulePrograme")
 
-public class Module {
+public class ModulePrograme {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
 
     @ManyToOne
-    @JoinColumn(name="professeur_id")
+    @JoinColumn(name="professeur")
     private Professeur professeur;
 
-    @ManyToOne
-    @JoinColumn(name ="filiale_id")
-    private Filiale filiale;
-
-    @ManyToMany(mappedBy = "modules")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "moduleprograme_groupe",
+            joinColumns = @JoinColumn(name = "moduleprograme_id"),
+            inverseJoinColumns = @JoinColumn(name = "groupe_id"))
     private Set<Groupe> groupes;
 
-    @ManyToMany(mappedBy = "modules")
-    private Set<Stagiaire> stagiaires;
+    @ManyToMany(mappedBy = "moduleProgrames")
+    private List<Stagiaire> stagiaires;
+
+   /* @ManyToMany(mappedBy = "moduleProgrames")
+    private List<Filiale> filiales;*/
+   @ManyToMany
+   @JoinTable(name = "moduleprograme_filiale",
+           joinColumns = @JoinColumn(name = "moduleprograme_id"),
+           inverseJoinColumns = @JoinColumn(name = "filiale_id"))
+   private Set<Filiale> filiales;
+
+
 }
